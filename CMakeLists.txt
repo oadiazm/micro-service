@@ -7,6 +7,7 @@ if(UNIX) # Darwing or Linux
     
     find_package(Boost REQUIRED COMPONENTS system thread log program_options chrono)
     find_package(Threads REQUIRED)
+    find_package(cpprestsdk REQUIRED)
 
     if(APPLE)
         # Prefer a homebrew version of OpenSSL over the one in /usr/lib
