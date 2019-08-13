@@ -4,7 +4,7 @@ project(micro-service)
 
 # Configure required libraries ...
 if(UNIX) # Darwing or Linux
-    
+
     find_package(Boost REQUIRED COMPONENTS system thread log program_options chrono)
     find_package(Threads REQUIRED)
 
@@ -15,13 +15,19 @@ if(UNIX) # Darwing or Linux
 	    list(REVERSE OPENSSL_ROOT_DIR)
 
         find_package(OpenSSL 1.0.2 REQUIRED)
-        set(OPENSSL_VERSION "1.0.2p")
+        set(OPENSSL_VERSION "1.0.2s")
+
+        #find_package(cpprestsdk REQUIRED NAMES cpprestsdk cpprest)
+        find_library(cpprestsdk-lib cpprest)
+        message(STATUS "cpprestsdk-lib = ${cpprestsdk-lib}")
+
+        #set(CPPRESTSDK_VERSION "v2.10.14")
     else()
         find_package(OpenSSL 1.0.1 REQUIRED)
         set(OPENSSL_VERSION "1.0.1")
+        find_package( libcpprest-dev REQUIRED )
     endif()
-    
-    find_package(cpprestsdk REQUIRED)
+
 
 elseif(WIN32) # Windows systems including Win64.
     message(FATAL_ERROR "-- Windows is not supported for now.")
@@ -52,7 +58,11 @@ add_executable(${PROJECT_NAME} ./source/main.cpp
                                ./source/foundation/basic_controller.cpp)
 
 # headers search paths ...
-set(CPPRESTSDK_INCLUDE_DIR "./libs/cpprestsdk/Release/include")
+# set(CPPRESTSDK_INCLUDE_DIR "./libs/cpprestsdk/Release/include")
+set(CPPRESTSDK_INCLUDE_DIR "/usr/local/include/")
+# message(OPENSSL_VERSION " ${OPENSSL_VERSION}")
+# message(CPPRESTSDK_INCLUDE_DIR " ${CPPRESTSDK_INCLUDE_DIR}")
+# message(cpprestsdk::cpprest " ${cpprestsdk_DIR}")
 set(MICROSERVICE_INCLUDE_DIR "./source/foundation/include")
 message(MICROSERVICE " ${MICROSERVICE_INCLUDE_DIR}")
 set(HEADER_SEARCH_PATHS ${CPPRESTSDK_INCLUDE_DIR} ${MICROSERVICE_INCLUDE_DIR} ${Boost_INCLUDE_DIR} ${OPENSSL_INCLUDE_DIR})
@@ -60,7 +70,9 @@ set(HEADER_SEARCH_PATHS ${CPPRESTSDK_INCLUDE_DIR} ${MICROSERVICE_INCLUDE_DIR} ${
 # library search paths ...
 if(APPLE)
     set(OPENSSL_LIBS "/usr/local/Cellar/openssl/${OPENSSL_VERSION}/lib/libssl.1.0.0.dylib;/usr/local/Cellar/openssl/${OPENSSL_VERSION}/lib/libcrypto.1.0.0.dylib")
-    set(CPPRESTSDK_LIBRARY "${PROJECT_SOURCE_DIR}/libs/cpprestsdk/build.release/Binaries/libcpprest.a")
+    set(CPPRESTSDK_LIBRARY "${cpprestsdk-lib}")
+
+    #set(CPPRESTSDK_LIBRARY "${PROJECT_SOURCE_DIR}/libs/cpprestsdk/build.release/Binaries/libcpprest.a")
     set(ZIP_LIBRARY "/usr/local/Cellar/zlib/1.2.11/lib/libz.dylib")
 
     set(LIBRARIES_SEARCH_PATHS ${OPENSSL_LIBS} ${Boost_LIBRARIES} ${CPPRESTSDK_LIBRARY} ${ZIP_LIBRARY})
