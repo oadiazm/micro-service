@@ -7,7 +7,6 @@ if(UNIX) # Darwing or Linux
     
     find_package(Boost REQUIRED COMPONENTS system thread log program_options chrono)
     find_package(Threads REQUIRED)
-    find_package(cpprestsdk REQUIRED)
 
     if(APPLE)
         # Prefer a homebrew version of OpenSSL over the one in /usr/lib
@@ -21,6 +20,8 @@ if(UNIX) # Darwing or Linux
         find_package(OpenSSL 1.0.1 REQUIRED)
         set(OPENSSL_VERSION "1.0.1")
     endif()
+    
+    find_package(cpprestsdk REQUIRED)
 
 elseif(WIN32) # Windows systems including Win64.
     message(FATAL_ERROR "-- Windows is not supported for now.")
